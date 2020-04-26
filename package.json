@@ -1,12 +1,51 @@
 {
   "name": "i18n-cloud-translator",
-  "version": "0.1.0",
   "description": "Automated translation of i18n files using cloud translation APIs",
-  "main": "index.js",
-  "repository": "https://github.com/fusion2004/i18n-cloud-translator",
+  "version": "0.1.0",
   "author": "Mark Oleson",
-  "license": "MIT",
+  "bin": {
+    "i18n-cloud-translator": "./bin/run"
+  },
+  "bugs": "https://github.com/https://github.com/fusion2004/i18n-cloud-translator/issues",
+  "dependencies": {
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^2"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "@oclif/test": "^1",
+    "chai": "^4",
+    "eslint": "^5.13",
+    "eslint-config-oclif": "^3.1",
+    "mocha": "^5",
+    "nyc": "^14"
+  },
   "engines": {
-    "node" : ">=0.10"
+    "node": ">=10"
+  },
+  "files": [
+    "/bin",
+    "/src"
+  ],
+  "homepage": "https://github.com/https://github.com/fusion2004/i18n-cloud-translator",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "oclif": {
+    "bin": "i18n-cloud-translator"
+  },
+  "repository": "https://github.com/fusion2004/i18n-cloud-translator",
+  "scripts": {
+    "posttest": "eslint .",
+    "prepack": "oclif-dev readme",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "volta": {
+    "node": "10.20.1",
+    "yarn": "1.22.4"
   }
 }
