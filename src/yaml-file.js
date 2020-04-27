@@ -12,9 +12,11 @@ class YamlFile {
     try {
       this.file = await fs.promises.readFile(this.filepath);
       this.data = yaml.safeLoad(this.file);
+      this.exists = true;
     } catch (error) {
       if (error.code === 'ENOENT' && Boolean(this.optional)) {
         this.data = {};
+        this.exists = false;
       } else {
         throw error;
       }

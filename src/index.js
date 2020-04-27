@@ -20,7 +20,11 @@ class I18NCloudTranslatorCommand extends Command {
 
     let sourceTranslation = new SourceTranslation(config);
     await sourceTranslation.loadFiles();
+
+    // Build a template of the translations that were changed in the source translation file
     let changesTemplate = sourceTranslation.buildChanges();
+
+    this._notifyUserOfSourceTranslationsData(sourceTranslation, changesTemplate);
 
     // Create all destination translations and load their files, if they have any
     let destinationTranslations = config.get('destinationLanguages').map(lang => {
@@ -28,17 +32,52 @@ class I18NCloudTranslatorCommand extends Command {
     });
     await Promise.all(destinationTranslations.map(translation => translation.loadFile()));
 
+    this._notifyUserOfDestinationTranslationData(destinationTranslations);
+
+    // Build an array of the full set of changes to make to destination translation files
+    let changeset = [];
     // flatMap isn't available until node 11+
-    let changes = [];
     destinationTranslations.forEach(translation => {
       changesTemplate.forEach(change => {
-        changes.push({
+        changeset.push({
           ...change,
           translation,
         });
       });
     });
-    console.log(changes);
+
+    this._notifyUserOfFullChangeset(changeset);
+  }
+
+  _notifyUserOfSourceTranslationsData(sourceTranslation, changesTemplate) {
+    this.log(`\nWe've loaded your source translations file: ${sourceTranslation.filepath}`);
+    if (sourceTranslation.hash.exists) {
+      this.log('We also loaded the associated hash file, which will be updated when all changes are successfully executed');
+    } else {
+      this.warn('The associated hash file does not yet exist, and will be created when all changes are succesfully executed');
+    }
+
+    this.log(`\nWe detected ${changesTemplate.length} change(s) to your source translations.`);
+  }
+
+  _notifyUserOfDestinationTranslationData(destinationTranslations) {
+    let existingTranslations = 0;
+    let newTranslations = 0;
+
+    // Count up the destination translations on whether or not they have an existing file.
+    destinationTranslations.forEach(translation => {
+      if (translation.file.exists) {
+        existingTranslations++;
+      } else {
+        newTranslations++;
+      }
+    });
+
+    this.log(`Of your destination languages, ${existingTranslations} have translation files & ${newTranslations} are new`);
+  }
+
+  _notifyUserOfFullChangeset(changeset) {
+    this.log(`We will execute a total of ${changeset.length} change(s)\n`);
   }
 }
 
