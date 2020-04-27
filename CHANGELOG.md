@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-04-26
+
+### Added
+
+- Flag to set the project directory
+- Reading & validating config file
+- Loading .env from project dir
+
+### Removed
+
+- Hello world
+
 ## [0.1.0] - 2020-04-26
 
 ### Added
