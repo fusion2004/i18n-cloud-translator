@@ -1,5 +1,7 @@
 const { Command, flags } = require('@oclif/command');
 const path = require('path');
+const SourceTranslation = require('./source-translation');
+// const Translation = require('./translation');
 
 class I18NCloudTranslatorCommand extends Command {
   async run() {
@@ -16,7 +18,13 @@ class I18NCloudTranslatorCommand extends Command {
     process.env.CONFIG_FILE = path.join(dir, '.i18n-cloud-translator.json');
     let config = require('./config');
 
-    console.log(config.toString());
+    let sourceTranslation = new SourceTranslation(config);
+    await sourceTranslation.loadFiles();
+    sourceTranslation.hashIt();
+
+    // let destinationTranslations = config.destinationLanguages.map(lang => {
+    //   return new Translation(lang, config);
+    // });
   }
 }
 
@@ -32,7 +40,7 @@ I18NCloudTranslatorCommand.flags = {
   help: flags.help({ char: 'h' }),
   dir: flags.string({
     char: 'd',
-    description: 'directory to read config and write translations to (defaults to current dir)',
+    description: 'project directory to read config and write translations to (defaults to current dir)',
   }),
 };
 

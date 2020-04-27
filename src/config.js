@@ -48,6 +48,8 @@ let config = convict({
   },
 });
 
+// TODO: validate that the source language is not in the destinationLanguages array
+
 config.loadFile(process.env.CONFIG_FILE);
 
 config.validate();
