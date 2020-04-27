@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Loading YAML and JSON source translations, their hash file, and calculating the new hash data
+- Comparing the old and new hash data via JSON Patch, and transforming that into a set of translation changes
 
 ## [0.2.0] - 2020-04-26
 

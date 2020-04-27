@@ -20,7 +20,7 @@ class I18NCloudTranslatorCommand extends Command {
 
     let sourceTranslation = new SourceTranslation(config);
     await sourceTranslation.loadFiles();
-    sourceTranslation.hashIt();
+    let changes = sourceTranslation.buildChanges();
 
     // let destinationTranslations = config.destinationLanguages.map(lang => {
     //   return new Translation(lang, config);
