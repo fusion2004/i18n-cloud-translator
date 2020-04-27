@@ -1,7 +1,7 @@
 const { Command, flags } = require('@oclif/command');
 const path = require('path');
 const SourceTranslation = require('./source-translation');
-// const Translation = require('./translation');
+const Translation = require('./translation');
 
 class I18NCloudTranslatorCommand extends Command {
   async run() {
@@ -20,11 +20,25 @@ class I18NCloudTranslatorCommand extends Command {
 
     let sourceTranslation = new SourceTranslation(config);
     await sourceTranslation.loadFiles();
-    let changes = sourceTranslation.buildChanges();
+    let changesTemplate = sourceTranslation.buildChanges();
 
-    // let destinationTranslations = config.destinationLanguages.map(lang => {
-    //   return new Translation(lang, config);
-    // });
+    // Create all destination translations and load their files, if they have any
+    let destinationTranslations = config.get('destinationLanguages').map(lang => {
+      return new Translation(lang, config);
+    });
+    await Promise.all(destinationTranslations.map(translation => translation.loadFile()));
+
+    // flatMap isn't available until node 11+
+    let changes = [];
+    destinationTranslations.forEach(translation => {
+      changesTemplate.forEach(change => {
+        changes.push({
+          ...change,
+          translation,
+        });
+      });
+    });
+    console.log(changes);
   }
 }
 
