@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2020-04-27
+
 ### Added
 
 - Loading YAML and JSON source translations, their hash file, and calculating the new hash data
