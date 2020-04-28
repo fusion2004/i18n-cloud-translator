@@ -29,7 +29,7 @@ class ChangeExecutor {
     let [translatedText] = await this.translator.translate(change.sourceTranslation, change.translation.lang);
 
     let data = change.translation.file.data;
-    let path = change.path.split('/');
+    let path = change.path.split('/').splice(1);
 
     // Follow the path into the destination translation's data,
     // until we can finally set the translated text.

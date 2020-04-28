@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Saved translations files no longer have a top-level blank key
+
 ## [0.3.0] - 2020-04-27
 
 ### Added
