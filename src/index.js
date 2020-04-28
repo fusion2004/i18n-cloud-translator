@@ -1,5 +1,8 @@
 const { Command, flags } = require('@oclif/command');
 const path = require('path');
+const Bottleneck = require('bottleneck');
+const ChangeExecutor = require('./change-executor');
+const GoogleTranslator = require('./google-translator');
 const SourceTranslation = require('./source-translation');
 const Translation = require('./translation');
 
@@ -47,6 +50,28 @@ class I18NCloudTranslatorCommand extends Command {
     });
 
     this._notifyUserOfFullChangeset(changeset);
+
+    // Instantiate the translator - this would be a good place to hook in for future work to support
+    // multiple translation services.
+    let translator = new GoogleTranslator(config);
+
+    // Setup the executor and the rate-limited scheduler
+    // This ensures we don't hit APIs too fast and hit rate limites
+    let executor = new ChangeExecutor(translator, this.log);
+    let limiter = new Bottleneck({
+      maxConcurrent: 1,
+      minTime: 50,
+    });
+
+    // Schedule the work!
+    let executions = changeset.map(change => {
+      return limiter.schedule(() => executor.execute(change));
+    });
+    await Promise.all(executions);
+
+    // save all the things
+
+    // notify user of completion
   }
 
   _notifyUserOfSourceTranslationsData(sourceTranslation, changesTemplate) {

@@ -28,7 +28,7 @@ let config = convict({
     env: 'GCP_KEY',
     sensitive: true,
   },
-  gcpPlatformId: {
+  gcpProjectId: {
     doc: 'Your Google Cloud Platform Project ID',
     format: String,
     default: null,
