@@ -20,7 +20,7 @@ $ npm install -g i18n-cloud-translator
 $ i18n-cloud-translator COMMAND
 running command...
 $ i18n-cloud-translator (-v|--version|version)
-i18n-cloud-translator/0.3.1 darwin-x64 node-v10.20.1
+i18n-cloud-translator/0.3.2 darwin-x64 node-v10.20.1
 $ i18n-cloud-translator --help [COMMAND]
 USAGE
   $ i18n-cloud-translator COMMAND

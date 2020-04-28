@@ -1,7 +1,7 @@
 {
   "name": "i18n-cloud-translator",
   "description": "Automated translation of i18n files using cloud translation APIs",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": "Mark Oleson",
   "bin": {
     "i18n-cloud-translator": "./bin/run"
@@ -34,7 +34,7 @@
     "/bin",
     "/src"
   ],
-  "homepage": "https://github.com/https://github.com/fusion2004/i18n-cloud-translator",
+  "homepage": "https://github.com/fusion2004/i18n-cloud-translator",
   "keywords": [
     "oclif"
   ],
