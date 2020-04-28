@@ -27,6 +27,12 @@ class YamlFile {
     let newFile = yaml.safeDump(this.data);
     await fs.promises.writeFile(this.filepath, newFile);
   }
+
+  // For when you need to wholesale set new data, instead of mutating the
+  // existing data.
+  setData(newData) {
+    this.data = newData;
+  }
 }
 
 module.exports = YamlFile;

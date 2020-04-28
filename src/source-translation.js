@@ -28,9 +28,23 @@ class SourceTranslation {
     await this.hash.read();
   }
 
+  // This will update the hash file with the new hashed output.
+  // If you try to build changes after running this, it will no longer work
+  // (since the changes will be an empty set).
+  //
+  // This should be considered the very last step, after successfully saving
+  // all the destination translations.
+  async saveHashFile() {
+    this.hash.setData(this.newHashData);
+    await this.hash.write();
+  }
+
+  // This builds the changeset template.
+  // This will be duplicated for every destination language for the
+  // final changeset.
   buildChanges() {
-    let newHashData = this._hashThisObject(this.file.data);
-    let operations = compare(this.hash.data, newHashData);
+    this.newHashData = this._hashThisObject(this.file.data);
+    let operations = compare(this.hash.data, this.newHashData);
     let changes = [];
 
     operations.forEach(operation => {

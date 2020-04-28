@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compiling a full set of changes to make linked to each specific destination translation file
 - Logging messages informing the user about what we loaded, what we couldn't load, how many changes we've detected, etc
 - Execute the changeset using a rate-limited scheduler, hitting the Google Cloud Translation API, and setting the new values in the translation data
+- Upon successful completion of changeset execution, save all the files and notify the user
 
 ## [0.2.0] - 2020-04-26
 

@@ -18,6 +18,10 @@ class Translation {
     this.file = new Klass(this.filepath, true);
     await this.file.read();
   }
+
+  async saveFile() {
+    await this.file.write();
+  }
 }
 
 module.exports = Translation;

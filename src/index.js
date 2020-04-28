@@ -69,9 +69,11 @@ class I18NCloudTranslatorCommand extends Command {
     });
     await Promise.all(executions);
 
-    // save all the things
+    // Save all the things
+    await Promise.all(destinationTranslations.map(translation => translation.saveFile()));
+    await sourceTranslation.saveHashFile();
 
-    // notify user of completion
+    this._notifyUserOfCompletion();
   }
 
   _notifyUserOfSourceTranslationsData(sourceTranslation, changesTemplate) {
@@ -103,6 +105,10 @@ class I18NCloudTranslatorCommand extends Command {
 
   _notifyUserOfFullChangeset(changeset) {
     this.log(`We will execute a total of ${changeset.length} change(s)\n`);
+  }
+
+  _notifyUserOfCompletion() {
+    this.log('\nAll changes have been executed, and the destination translations saved.');
   }
 }
 
