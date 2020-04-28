@@ -28,6 +28,10 @@ class I18NCloudTranslatorCommand extends Command {
     let changesTemplate = sourceTranslation.buildChanges();
 
     this._notifyUserOfSourceTranslationsData(sourceTranslation, changesTemplate);
+    if (changesTemplate.length === 0) {
+      this._notifyUserOfNothingToDo();
+      this.exit(0);
+    }
 
     // Create all destination translations and load their files, if they have any
     let destinationTranslations = config.get('destinationLanguages').map(lang => {
@@ -101,6 +105,10 @@ class I18NCloudTranslatorCommand extends Command {
     });
 
     this.log(`Of your destination languages, ${existingTranslations} have translation files & ${newTranslations} are new`);
+  }
+
+  _notifyUserOfNothingToDo() {
+    this.log('Nothing to do!');
   }
 
   _notifyUserOfFullChangeset(changeset) {
