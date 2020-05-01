@@ -1,11 +1,21 @@
-const path = require('path');
-const { fileClass } = require('./utils');
+import path = require('path');
+import { fileClass } from './utils';
+import { TranslatorConfig, FileFormat } from './types';
+import JsonFile from './json-file';
+import YamlFile from './yaml-file';
+
+interface Translation {
+  fileFormat: FileFormat;
+  lang: string;
+  filepath: string;
+  file: JsonFile | YamlFile;
+}
 
 class Translation {
-  constructor(lang, config) {
-    let projectDir = config.get('projectDir');
-    let translationsDir = config.get('translationsDir');
-    this.fileFormat = config.get('fileFormat');
+  constructor(lang: string, config: TranslatorConfig) {
+    let projectDir = config.projectDir;
+    let translationsDir = config.translationsDir;
+    this.fileFormat = config.fileFormat;
     this.lang = lang;
 
     let filename = `${lang}.${this.fileFormat}`;
@@ -24,4 +34,4 @@ class Translation {
   }
 }
 
-module.exports = Translation;
+export default Translation;

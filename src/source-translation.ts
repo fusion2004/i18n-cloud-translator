@@ -1,14 +1,33 @@
-const crypto = require('crypto');
-const path = require('path');
-const { compare, getValueByPointer } = require('fast-json-patch');
-const { fileClass } = require('./utils');
+import crypto = require('crypto');
+import path = require('path');
+import { compare, getValueByPointer, AddOperation, ReplaceOperation } from 'fast-json-patch';
+import { fileClass } from './utils';
+import {
+  ChangeTemplate,
+  ChangeTemplateRemoveOperation,
+  ChangeTemplateTranslateOperation,
+  TranslatorConfig,
+  TranslationData,
+  FileFormat,
+} from './types';
+import JsonFile from './json-file';
+import YamlFile from './yaml-file';
+
+interface SourceTranslation {
+  fileFormat: FileFormat;
+  filepath: string;
+  hashpath: string;
+  file: JsonFile | YamlFile;
+  hash: JsonFile | YamlFile;
+  newHashData: TranslationData;
+}
 
 class SourceTranslation {
-  constructor(config) {
-    let sourceLanguage = config.get('sourceLanguage');
-    let projectDir = config.get('projectDir');
-    let translationsDir = config.get('translationsDir');
-    this.fileFormat = config.get('fileFormat');
+  constructor(config: TranslatorConfig) {
+    let sourceLanguage = config.sourceLanguage;
+    let projectDir = config.projectDir;
+    let translationsDir = config.translationsDir;
+    this.fileFormat = config.fileFormat;
 
     let filename = `${sourceLanguage}.${this.fileFormat}`;
     this.filepath = path.resolve(projectDir, translationsDir, filename);
@@ -45,14 +64,15 @@ class SourceTranslation {
   buildChanges() {
     this.newHashData = this._hashThisObject(this.file.data);
     let operations = compare(this.hash.data, this.newHashData);
-    let changes = [];
+    let changes: ChangeTemplate[] = [];
 
     operations.forEach(operation => {
       if (operation.op === 'remove') {
-        changes.push({
+        let template: ChangeTemplateRemoveOperation = {
           op: 'remove',
           path: operation.path,
-        });
+        };
+        changes.push(template);
       } else if (operation.op === 'add' || operation.op === 'replace') {
         this._addTranslationChanges(operation, changes);
       }
@@ -61,29 +81,32 @@ class SourceTranslation {
     return changes;
   }
 
-  _addTranslationChangeForPath(path, changes) {
-    changes.push({
+  _addTranslationChangeForPath(path: string, changes: ChangeTemplate[]) {
+    let template: ChangeTemplateTranslateOperation = {
       op: 'translate',
       path: path,
       sourceTranslation: getValueByPointer(this.file.data, path),
-    });
+    };
+    changes.push(template);
   }
 
-  _addTranslationChanges(operation, changes) {
+  _addTranslationChanges(operation: AddOperation<any> | ReplaceOperation<any>, changes: ChangeTemplate[]) {
     if (typeof operation.value === 'object') {
-      this._expandTranslationChanges(operation.value, operation.path, changes);
+      this._expandTranslationChanges(operation.value as TranslationData, operation.path, changes);
     } else if (typeof operation.value === 'string') {
       this._addTranslationChangeForPath(operation.path, changes);
     }
   }
 
-  _expandTranslationChanges(object, path, changes) {
+  _expandTranslationChanges(object: TranslationData, path: string, changes: ChangeTemplate[]) {
     for (let key in object) {
       if (Object.prototype.hasOwnProperty.call(object, key)) {
         let value = object[key];
         let deeperPath = `${path}/${key}`;
 
-        if (typeof value === 'object') {
+        if (Array.isArray(value)) {
+          // TODO: typescript has revealed a missing case here
+        } else if (typeof value === 'object') {
           this._expandTranslationChanges(value, deeperPath, changes);
         } else if (typeof value === 'string') {
           this._addTranslationChangeForPath(deeperPath, changes);
@@ -94,15 +117,14 @@ class SourceTranslation {
     }
   }
 
-  _hashThisObject(obj) {
-    let newObj = {};
+  _hashThisObject(obj: TranslationData) {
+    let newObj: TranslationData = {};
 
     for (let key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
         let value = obj[key];
 
         if (Array.isArray(value)) {
-          // I don't think this is actually a real case. Consider removing/erroring?
           newObj[key] = value.map(item => this._hashThisObject(item));
         } else if (typeof value === 'object') {
           newObj[key] = this._hashThisObject(value);
@@ -119,4 +141,4 @@ class SourceTranslation {
   }
 }
 
-module.exports = SourceTranslation;
+export default SourceTranslation;

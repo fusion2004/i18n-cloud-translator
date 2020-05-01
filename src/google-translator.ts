@@ -1,17 +1,23 @@
-const { Translate } = require('@google-cloud/translate').v2;
+import { v2 } from '@google-cloud/translate';
+import { TranslatorConfig } from './types';
+
+interface GoogleTranslator {
+  client: v2.Translate;
+  sourceLanguage: string;
+}
 
 class GoogleTranslator {
-  constructor(config) {
-    this.client = new Translate({
-      projectId: config.get('gcpProjectId'),
-      key: config.get('gcpKey'),
+  constructor(config: TranslatorConfig) {
+    this.client = new v2.Translate({
+      projectId: config.gcpProjectId,
+      key: config.gcpKey,
     });
-    this.sourceLanguage = config.get('sourceLanguage');
+    this.sourceLanguage = config.sourceLanguage;
   }
 
-  translate(text, lang) {
+  translate(text: string, lang: string) {
     return this.client.translate(text, lang);
   }
 }
 
-module.exports = GoogleTranslator;
+export default GoogleTranslator;

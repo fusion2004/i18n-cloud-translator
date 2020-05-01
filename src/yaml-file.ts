@@ -1,16 +1,25 @@
-const fs = require('fs');
-const yaml = require('js-yaml');
+import fs = require('fs');
+import yaml = require('js-yaml');
+import { TranslationData } from './types';
+
+interface YamlFile {
+  filepath: string;
+  optional: boolean;
+  file: string;
+  data: TranslationData;
+  exists: boolean;
+}
 
 class YamlFile {
   // If a file is optional, it means it is okay for it to fail to load.
-  constructor(filepath, optional) {
+  constructor(filepath: string, optional?: boolean) {
     this.filepath = filepath;
-    this.optional = optional;
+    this.optional = Boolean(optional);
   }
 
   async read() {
     try {
-      this.file = await fs.promises.readFile(this.filepath);
+      this.file = await fs.promises.readFile(this.filepath, { encoding: 'utf8' });
       this.data = yaml.safeLoad(this.file);
       this.exists = true;
     } catch (error) {
@@ -24,15 +33,15 @@ class YamlFile {
   }
 
   async write() {
-    let newFile = yaml.safeDump(this.data);
+    let newFile = yaml.safeDump(this.data) + '\n';
     await fs.promises.writeFile(this.filepath, newFile);
   }
 
   // For when you need to wholesale set new data, instead of mutating the
   // existing data.
-  setData(newData) {
+  setData(newData: TranslationData) {
     this.data = newData;
   }
 }
 
-module.exports = YamlFile;
+export default YamlFile;

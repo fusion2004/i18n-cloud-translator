@@ -1,7 +1,8 @@
-const JsonFile = require('./json-file');
-const YamlFile = require('./yaml-file');
+import JsonFile from  './json-file';
+import YamlFile from './yaml-file';
+import { FileFormat } from './types';
 
-function fileClass(fileFormat) {
+export function fileClass(fileFormat: FileFormat): typeof JsonFile | typeof YamlFile {
   switch (fileFormat) {
   case 'json':
     return JsonFile;
@@ -10,5 +11,3 @@ function fileClass(fileFormat) {
     return YamlFile;
   }
 }
-
-module.exports = { fileClass };
