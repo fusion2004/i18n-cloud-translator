@@ -1,9 +1,11 @@
 {
   "extends": [
-    "oclif"
+    "oclif",
+    "oclif-typescript"
   ],
   "rules": {
     "object-curly-spacing": ["error", "always"],
+    "prefer-const": "off",
     "semi": ["error", "always"]
   }
 }
