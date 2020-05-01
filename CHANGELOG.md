@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Saved translation files now end in a newline
+
+### Changed
+
+- Switched the codebase to typescript, fixes #5
+- Changed the format of the `destinationLanguages` from an array of strings `"en"` to an array of objects: `{ "code": "en"}`
+
 ## [0.3.2] - 2020-04-27
 
 ### Fixed

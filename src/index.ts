@@ -1,14 +1,31 @@
-const { Command, flags } = require('@oclif/command');
-const path = require('path');
-const Bottleneck = require('bottleneck');
-const ChangeExecutor = require('./change-executor');
-const GoogleTranslator = require('./google-translator');
-const SourceTranslation = require('./source-translation');
-const Translation = require('./translation');
+import { Command, flags } from '@oclif/command';
+import path = require('path');
+import Bottleneck from 'bottleneck';
+import ChangeExecutor from './change-executor';
+import { getConfig } from './config';
+import GoogleTranslator from './google-translator';
+import SourceTranslation from './source-translation';
+import Translation from './translation';
+import { ChangesetItem, ChangeTemplate } from './types';
 
-class I18NCloudTranslatorCommand extends Command {
+class I18NCloudTranslator extends Command {
+  static description = 'describe the command here'
+
+  static flags = {
+    // add --version flag to show CLI version
+    version: flags.version({ char: 'v' }),
+    // add --help flag to show CLI version
+    help: flags.help({ char: 'h' }),
+    dir: flags.string({
+      char: 'd',
+      description: 'project directory to read config and write translations to (defaults to current dir)',
+    }),
+  }
+
+  static args = []
+
   async run() {
-    const { flags } = this.parse(I18NCloudTranslatorCommand);
+    const { flags } = this.parse(I18NCloudTranslator);
 
     let dir;
     if (flags.dir) {
@@ -17,9 +34,10 @@ class I18NCloudTranslatorCommand extends Command {
       dir = process.cwd();
     }
 
-    process.env.PROJECT_DIR = dir;
-    process.env.CONFIG_FILE = path.join(dir, '.i18n-cloud-translator.json');
-    let config = require('./config');
+    let config = getConfig({
+      projectDir: dir,
+      configFile: path.join(dir, '.i18n-cloud-translator.json'),
+    });
 
     let sourceTranslation = new SourceTranslation(config);
     await sourceTranslation.loadFiles();
@@ -34,15 +52,15 @@ class I18NCloudTranslatorCommand extends Command {
     }
 
     // Create all destination translations and load their files, if they have any
-    let destinationTranslations = config.get('destinationLanguages').map(lang => {
-      return new Translation(lang, config);
+    let destinationTranslations = config.destinationLanguages.map(lang => {
+      return new Translation(lang.code, config);
     });
     await Promise.all(destinationTranslations.map(translation => translation.loadFile()));
 
     this._notifyUserOfDestinationTranslationData(destinationTranslations);
 
     // Build an array of the full set of changes to make to destination translation files
-    let changeset = [];
+    let changeset: ChangesetItem[] = [];
     // flatMap isn't available until node 11+
     destinationTranslations.forEach(translation => {
       changesTemplate.forEach(change => {
@@ -80,7 +98,7 @@ class I18NCloudTranslatorCommand extends Command {
     this._notifyUserOfCompletion();
   }
 
-  _notifyUserOfSourceTranslationsData(sourceTranslation, changesTemplate) {
+  _notifyUserOfSourceTranslationsData(sourceTranslation: SourceTranslation, changesTemplate: ChangeTemplate[]) {
     this.log(`\nWe've loaded your source translations file: ${sourceTranslation.filepath}`);
     if (sourceTranslation.hash.exists) {
       this.log('We also loaded the associated hash file, which will be updated when all changes are successfully executed');
@@ -91,7 +109,7 @@ class I18NCloudTranslatorCommand extends Command {
     this.log(`\nWe detected ${changesTemplate.length} change(s) to your source translations.`);
   }
 
-  _notifyUserOfDestinationTranslationData(destinationTranslations) {
+  _notifyUserOfDestinationTranslationData(destinationTranslations: Translation[]) {
     let existingTranslations = 0;
     let newTranslations = 0;
 
@@ -111,7 +129,7 @@ class I18NCloudTranslatorCommand extends Command {
     this.log('Nothing to do!');
   }
 
-  _notifyUserOfFullChangeset(changeset) {
+  _notifyUserOfFullChangeset(changeset: ChangesetItem[]) {
     this.log(`We will execute a total of ${changeset.length} change(s)\n`);
   }
 
@@ -120,20 +138,4 @@ class I18NCloudTranslatorCommand extends Command {
   }
 }
 
-I18NCloudTranslatorCommand.description = `Describe the command here
-...
-Extra documentation goes here
-`;
-
-I18NCloudTranslatorCommand.flags = {
-  // add --version flag to show CLI version
-  version: flags.version({ char: 'v' }),
-  // add --help flag to show CLI version
-  help: flags.help({ char: 'h' }),
-  dir: flags.string({
-    char: 'd',
-    description: 'project directory to read config and write translations to (defaults to current dir)',
-  }),
-};
-
-module.exports = I18NCloudTranslatorCommand;
+export = I18NCloudTranslator
