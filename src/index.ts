@@ -78,7 +78,7 @@ class I18NCloudTranslator extends Command {
     let translator = new GoogleTranslator(config);
 
     // Setup the executor and the rate-limited scheduler
-    // This ensures we don't hit APIs too fast and hit rate limites
+    // This ensures we don't hit APIs too fast and hit rate limits
     let executor = new ChangeExecutor(translator, this.log);
     let limiter = new Bottleneck({
       maxConcurrent: 1,
@@ -87,7 +87,11 @@ class I18NCloudTranslator extends Command {
 
     // Schedule the work!
     let executions = changeset.map(change => {
-      return limiter.schedule(() => executor.execute(change));
+      return limiter.schedule(() => {
+        return executor.execute(change).catch(error => {
+          this.error(error);
+        });
+      });
     });
     await Promise.all(executions);
 
