@@ -1,7 +1,7 @@
 {
   "name": "i18n-cloud-translator",
   "description": "Automated translation of i18n files using cloud translation APIs",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "author": "Mark Oleson",
   "bin": {
     "i18n-cloud-translator": "./bin/run"
