@@ -26,9 +26,33 @@ class ChangeExecutor {
     }
   }
 
-  async executeRemoval(_change: ChangesetRemoveOperationItem) {
-    // TODO: implement
-    throw new Error('removal is not implemented yet');
+  async executeRemoval(change: ChangesetRemoveOperationItem) {
+    // TODO: Move this back out of this class and use a start and finish event instead
+    // That way we can switch between showing each and updating a progress bar
+    this.logger(`Removing key '${change.path}' from lang '${change.translation.lang}'`);
+
+    let data = change.translation.file.data;
+    let path = change.path.split('/').splice(1);
+
+    // Follow the path into the destination translation's data,
+    // until we can finally set the translated text.
+    path.reduce((current, key, index) => {
+      let last = index === path.length - 1;
+
+      if (last) {
+        delete current[key];
+      } else {
+        if (typeof current[key] !== 'object') {
+          current[key] = {};
+        }
+        // We're ensuring this is an object here,
+        // but we have to encourage TypeScript to understand the correct type.
+        return current[key] as TranslationData;
+      }
+
+      // We don't do anything with the final return value, but this makes TypeScript happy.
+      return current;
+    }, data);
   }
 
   async executeTranslation(change: ChangesetTranslateOperationItem) {
