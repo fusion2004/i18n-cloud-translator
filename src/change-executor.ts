@@ -15,10 +15,9 @@ class ChangeExecutor {
   }
 
   async execute(change: ChangesetItem) {
-    // TODO: throwing an error here should end the process, not through unhandled promise error and keep going
     switch (change.op) {
     case 'remove':
-      this.executeRemoval(change);
+      await this.executeRemoval(change);
       break;
 
     case 'translate':

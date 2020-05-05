@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Switched the codebase to typescript, fixes #5
 - Changed the format of the `destinationLanguages` from an array of strings `"en"` to an array of objects: `{ "code": "en"}`
+- Errors thrown while executing a changeset will error and exit, instead of throwing unhandled promise exception warnings
 
 ## [0.3.2] - 2020-04-27
 
