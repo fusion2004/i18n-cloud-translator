@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2020-05-04
+
 ### Changed
 
 - Update published files to npm to fix error loading lib after switching to typescript
