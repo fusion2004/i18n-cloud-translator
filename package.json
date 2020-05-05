@@ -40,7 +40,7 @@
   },
   "files": [
     "/bin",
-    "/src"
+    "/lib"
   ],
   "homepage": "https://github.com/fusion2004/i18n-cloud-translator",
   "keywords": [
