@@ -64,14 +64,14 @@ class ChangeExecutor {
     this.logger(`Translating key '${change.path}' to lang '${change.translation.lang}'`);
 
     let sourceText = change.sourceTranslation;
-    
+
     const hasPlaceholders = PLACEHOLDER_REGEX_PRE.test(sourceText);
 
     if (hasPlaceholders) {
       sourceText = sourceText.replace(PLACEHOLDER_REGEX_PRE, '<span class="notranslate">$1</span>');
     }
 
-    let [translatedText] = await this.translator.translate(change.sourceTranslation, change.translation.lang);
+    let [translatedText] = await this.translator.translate(sourceText, change.translation.lang);
 
     if (hasPlaceholders) {
       translatedText = translatedText.replace(PLACEHOLDER_REGEX_POST, '{$1}');
