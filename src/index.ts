@@ -1,31 +1,31 @@
-import { Command, flags } from '@oclif/command';
-import path = require('path');
+import { Command, Flags } from '@oclif/core';
+import * as path from 'path';
 import Bottleneck from 'bottleneck';
-import ChangeExecutor from './change-executor';
-import { getConfig } from './config';
-import GoogleTranslator from './google-translator';
-import SourceTranslation from './source-translation';
-import Translation from './translation';
-import { ChangesetItem, ChangeTemplate } from './types';
+import ChangeExecutor from './change-executor.js';
+import { getConfig } from './config.js';
+import GoogleTranslator from './google-translator.js';
+import SourceTranslation from './source-translation.js';
+import Translation from './translation.js';
+import type { ChangesetItem, ChangeTemplate } from './types.js';
 
 class I18NCloudTranslator extends Command {
-  static description = 'describe the command here'
+  static description = 'describe the command here';
 
   static flags = {
-    // add --version flag to show CLI version
-    version: flags.version({ char: 'v' }),
-    // add --help flag to show CLI version
-    help: flags.help({ char: 'h' }),
-    dir: flags.string({
+    // // add --version flag to show CLI version
+    // version: Flags.version({ char: "v" }),
+    // // add --help flag to show CLI version
+    // help: Flags.help({ char: "h" }),
+    dir: Flags.string({
       char: 'd',
       description: 'project directory to read config and write translations to (defaults to current dir)',
     }),
-  }
+  };
 
-  static args = []
+  static args = {};
 
   async run() {
-    const { flags } = this.parse(I18NCloudTranslator);
+    const { flags } = await this.parse(I18NCloudTranslator);
 
     let dir;
     if (flags.dir) {
@@ -52,18 +52,18 @@ class I18NCloudTranslator extends Command {
     }
 
     // Create all destination translations and load their files, if they have any
-    let destinationTranslations = config.destinationLanguages.map(lang => {
+    let destinationTranslations = config.destinationLanguages.map((lang) => {
       return new Translation(lang.code, config);
     });
-    await Promise.all(destinationTranslations.map(translation => translation.loadFile()));
+    await Promise.all(destinationTranslations.map((translation) => translation.loadFile()));
 
     this._notifyUserOfDestinationTranslationData(destinationTranslations);
 
     // Build an array of the full set of changes to make to destination translation files
     let changeset: ChangesetItem[] = [];
     // flatMap isn't available until node 11+
-    destinationTranslations.forEach(translation => {
-      changesTemplate.forEach(change => {
+    destinationTranslations.forEach((translation) => {
+      changesTemplate.forEach((change) => {
         changeset.push({
           ...change,
           translation,
@@ -79,16 +79,16 @@ class I18NCloudTranslator extends Command {
 
     // Setup the executor and the rate-limited scheduler
     // This ensures we don't hit APIs too fast and hit rate limits
-    let executor = new ChangeExecutor(translator, this.log);
+    let executor = new ChangeExecutor(translator, (msg: string) => this.log(msg));
     let limiter = new Bottleneck({
       maxConcurrent: 1,
       minTime: 50,
     });
 
     // Schedule the work!
-    let executions = changeset.map(change => {
+    let executions = changeset.map((change) => {
       return limiter.schedule(() => {
-        return executor.execute(change).catch(error => {
+        return executor.execute(change).catch((error) => {
           this.error(error);
         });
       });
@@ -96,7 +96,7 @@ class I18NCloudTranslator extends Command {
     await Promise.all(executions);
 
     // Save all the things
-    await Promise.all(destinationTranslations.map(translation => translation.saveFile()));
+    await Promise.all(destinationTranslations.map((translation) => translation.saveFile()));
     await sourceTranslation.saveHashFile();
 
     this._notifyUserOfCompletion();
@@ -105,9 +105,13 @@ class I18NCloudTranslator extends Command {
   _notifyUserOfSourceTranslationsData(sourceTranslation: SourceTranslation, changesTemplate: ChangeTemplate[]) {
     this.log(`\nWe've loaded your source translations file: ${sourceTranslation.filepath}`);
     if (sourceTranslation.hash.exists) {
-      this.log('We also loaded the associated hash file, which will be updated when all changes are successfully executed');
+      this.log(
+        'We also loaded the associated hash file, which will be updated when all changes are successfully executed',
+      );
     } else {
-      this.warn('The associated hash file does not yet exist, and will be created when all changes are succesfully executed');
+      this.warn(
+        'The associated hash file does not yet exist, and will be created when all changes are succesfully executed',
+      );
     }
 
     this.log(`\nWe detected ${changesTemplate.length} change(s) to your source translations.`);
@@ -118,7 +122,7 @@ class I18NCloudTranslator extends Command {
     let newTranslations = 0;
 
     // Count up the destination translations on whether or not they have an existing file.
-    destinationTranslations.forEach(translation => {
+    destinationTranslations.forEach((translation) => {
       if (translation.file.exists) {
         existingTranslations++;
       } else {
@@ -126,7 +130,9 @@ class I18NCloudTranslator extends Command {
       }
     });
 
-    this.log(`Of your destination languages, ${existingTranslations} have translation files & ${newTranslations} are new`);
+    this.log(
+      `Of your destination languages, ${existingTranslations} have translation files & ${newTranslations} are new`,
+    );
   }
 
   _notifyUserOfNothingToDo() {
@@ -142,4 +148,4 @@ class I18NCloudTranslator extends Command {
   }
 }
 
-export = I18NCloudTranslator
+export default I18NCloudTranslator;

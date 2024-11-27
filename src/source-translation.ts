@@ -1,17 +1,19 @@
-import crypto = require('crypto');
-import path = require('path');
-import { compare, getValueByPointer, AddOperation, ReplaceOperation } from 'fast-json-patch';
-import { fileClass } from './utils';
-import {
+import * as crypto from 'crypto';
+import * as path from 'path';
+import jsonpatch, { type AddOperation, type ReplaceOperation } from 'fast-json-patch';
+import { fileClass } from './utils.js';
+import type {
   ChangeTemplate,
   ChangeTemplateRemoveOperation,
   ChangeTemplateTranslateOperation,
   TranslatorConfig,
   TranslationData,
   FileFormat,
-} from './types';
-import JsonFile from './json-file';
-import YamlFile from './yaml-file';
+} from './types.js';
+import JsonFile from './json-file.js';
+import YamlFile from './yaml-file.js';
+
+const { compare, getValueByPointer } = jsonpatch;
 
 interface SourceTranslation {
   fileFormat: FileFormat;
@@ -30,10 +32,10 @@ class SourceTranslation {
     this.fileFormat = config.fileFormat;
 
     let filename = `${sourceLanguage}.${this.fileFormat}`;
-    this.filepath = path.resolve(projectDir, translationsDir, filename);
+    this.filepath = path.resolve(projectDir!, translationsDir!, filename);
 
     let hashname = `${sourceLanguage}.hashed.${this.fileFormat}`;
-    this.hashpath = path.resolve(projectDir, translationsDir, hashname);
+    this.hashpath = path.resolve(projectDir!, translationsDir!, hashname);
   }
 
   // This asynchronously loads the source translation file, and the hash file.
@@ -66,7 +68,7 @@ class SourceTranslation {
     let operations = compare(this.hash.data, this.newHashData);
     let changes: ChangeTemplate[] = [];
 
-    operations.forEach(operation => {
+    operations.forEach((operation) => {
       if (operation.op === 'remove') {
         let template: ChangeTemplateRemoveOperation = {
           op: 'remove',
@@ -125,7 +127,7 @@ class SourceTranslation {
         let value = obj[key];
 
         if (Array.isArray(value)) {
-          newObj[key] = value.map(item => this._hashThisObject(item));
+          newObj[key] = value.map((item) => this._hashThisObject(item));
         } else if (typeof value === 'object') {
           newObj[key] = this._hashThisObject(value);
         } else if (typeof value === 'string') {

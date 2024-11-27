@@ -1,13 +1,13 @@
-import JsonFile from  './json-file';
-import YamlFile from './yaml-file';
-import { FileFormat } from './types';
+import JsonFile from './json-file.js';
+import YamlFile from './yaml-file.js';
+import type { FileFormat } from './types.js';
 
 export function fileClass(fileFormat: FileFormat): typeof JsonFile | typeof YamlFile {
   switch (fileFormat) {
-  case 'json':
-    return JsonFile;
+    case 'json':
+      return JsonFile;
 
-  case 'yaml':
-    return YamlFile;
+    case 'yaml':
+      return YamlFile;
   }
 }

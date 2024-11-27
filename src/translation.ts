@@ -1,8 +1,8 @@
-import path = require('path');
-import { fileClass } from './utils';
-import { TranslatorConfig, FileFormat } from './types';
-import JsonFile from './json-file';
-import YamlFile from './yaml-file';
+import * as path from 'path';
+import { fileClass } from './utils.js';
+import type { TranslatorConfig, FileFormat } from './types.js';
+import type JsonFile from './json-file.js';
+import type YamlFile from './yaml-file.js';
 
 interface Translation {
   fileFormat: FileFormat;
@@ -19,7 +19,7 @@ class Translation {
     this.lang = lang;
 
     let filename = `${lang}.${this.fileFormat}`;
-    this.filepath = path.resolve(projectDir, translationsDir, filename);
+    this.filepath = path.resolve(projectDir!, translationsDir!, filename);
   }
 
   async loadFile() {
@@ -30,6 +30,10 @@ class Translation {
   }
 
   async saveFile() {
+    if (!this.file) {
+      return;
+    }
+
     await this.file.write();
   }
 }
