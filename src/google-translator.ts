@@ -1,5 +1,5 @@
 import { v2 } from '@google-cloud/translate';
-import { TranslatorConfig } from './types';
+import type { TranslatorConfig } from './types.js';
 
 interface GoogleTranslator {
   client: v2.Translate;

@@ -3,64 +3,88 @@
   "description": "Automated translation of i18n files using cloud translation APIs",
   "version": "0.4.1",
   "author": "Mark Oleson",
-  "bin": {
-    "i18n-cloud-translator": "./bin/run"
-  },
+  "bin": "./bin/run.js",
   "bugs": "https://github.com/https://github.com/fusion2004/i18n-cloud-translator/issues",
   "dependencies": {
-    "@google-cloud/translate": "^5.3.0",
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
-    "@oclif/plugin-help": "^2",
+    "@google-cloud/translate": "^8.5.0",
+    "@oclif/core": "^4.0.33",
+    "@oclif/plugin-help": "^6.2.18",
+    "@oclif/plugin-plugins": "^5.4.17",
+    "@oclif/plugin-version": "^2.2.16",
     "bottleneck": "^2.19.5",
-    "convict": "^5.2.0",
-    "dotenv": "^8.2.0",
-    "fast-json-patch": "^3.0.0-1",
-    "js-yaml": "^3.13.1",
-    "tslib": "^1"
+    "convict": "^6.2.4",
+    "dotenv": "^16.4.5",
+    "fast-json-patch": "^3.1.1",
+    "js-yaml": "^4.1.0",
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1",
-    "@oclif/test": "^1",
-    "@types/chai": "^4",
-    "@types/js-yaml": "^3.12.3",
-    "@types/mocha": "^5",
-    "@types/node": "^10",
-    "chai": "^4",
-    "eslint": "^5.13",
-    "eslint-config-oclif": "^3.1",
-    "eslint-config-oclif-typescript": "^0.1",
-    "mocha": "^5",
-    "nyc": "^14",
-    "ts-node": "^8",
-    "typescript": "^3.3"
+    "@oclif/prettier-config": "^0.2.1",
+    "@oclif/test": "^4.1.2",
+    "@types/chai": "^5.0.1",
+    "@types/convict": "^6.1.6",
+    "@types/js-yaml": "^4.0.9",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.9.4",
+    "chai": "^5.1.2",
+    "eslint": "^9.15.0",
+    "eslint-config-oclif": "^5.2.2",
+    "eslint-config-oclif-typescript": "^3.1.12",
+    "eslint-config-prettier": "^9.1.0",
+    "mocha": "^10.8.2",
+    "nyc": "^17.1.0",
+    "oclif": "^4.15.29",
+    "prettier": "^3.4.0",
+    "shx": "^0.3.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   },
   "engines": {
-    "node": ">=10.1"
+    "node": ">=18.0.0"
   },
   "files": [
     "/bin",
-    "/lib"
+    "/dist",
+    "/oclif.manifest.json"
   ],
   "homepage": "https://github.com/fusion2004/i18n-cloud-translator",
   "keywords": [
     "oclif"
   ],
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "dist/index.js",
+  "type": "module",
   "oclif": {
-    "bin": "i18n-cloud-translator"
+    "bin": "i18n-cloud-translator",
+    "dirname": "i18n-cloud-translator",
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-version"
+    ],
+    "commands": {
+      "strategy": "single",
+      "target": "./dist/index.js"
+    }
   },
   "repository": "https://github.com/fusion2004/i18n-cloud-translator",
   "scripts": {
-    "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "build": "shx rm -rf dist && tsc -b",
+    "lint": "eslint . --ext .ts",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "posttest": "npm run lint",
+    "prepack": "oclif manifest && oclif readme",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md"
   },
-  "types": "lib/index.d.ts",
+  "types": "dist/index.d.ts",
   "volta": {
-    "node": "10.20.1",
-    "yarn": "1.22.4"
+    "node": "22.11.0",
+    "yarn": "4.5.3"
   }
 }

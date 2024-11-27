@@ -1,6 +1,6 @@
-import fs = require('fs');
-import yaml = require('js-yaml');
-import { TranslationData } from './types';
+import * as fs from 'fs';
+import yaml from 'js-yaml';
+import type { TranslationData } from './types.js';
 
 interface YamlFile {
   filepath: string;
@@ -19,11 +19,13 @@ class YamlFile {
 
   async read() {
     try {
-      this.file = await fs.promises.readFile(this.filepath, { encoding: 'utf8' });
-      this.data = yaml.safeLoad(this.file);
+      this.file = await fs.promises.readFile(this.filepath, {
+        encoding: 'utf8',
+      });
+      this.data = yaml.load(this.file) as TranslationData;
       this.exists = true;
     } catch (error) {
-      if (error.code === 'ENOENT' && Boolean(this.optional)) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT' && Boolean(this.optional)) {
         this.data = {};
         this.exists = false;
       } else {
@@ -33,7 +35,7 @@ class YamlFile {
   }
 
   async write() {
-    let newFile = yaml.safeDump(this.data) + '\n';
+    let newFile = yaml.dump(this.data) + '\n';
     await fs.promises.writeFile(this.filepath, newFile);
   }
 

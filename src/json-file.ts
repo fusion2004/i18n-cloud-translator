@@ -1,5 +1,5 @@
-import fs = require('fs');
-import { TranslationData } from './types';
+import * as fs from 'fs';
+import type { TranslationData } from './types.js';
 
 interface JsonFile {
   filepath: string;
@@ -25,7 +25,7 @@ class JsonFile {
       this.data = JSON.parse(this.file);
       this.exists = true;
     } catch (error) {
-      if (error.code === 'ENOENT' && Boolean(this.optional)) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT' && Boolean(this.optional)) {
         this.data = {};
         this.exists = false;
       } else {

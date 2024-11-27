@@ -1,5 +1,10 @@
-import GoogleTranslator from './google-translator';
-import { ChangesetItem, ChangesetRemoveOperationItem, ChangesetTranslateOperationItem, TranslationData } from './types';
+import GoogleTranslator from './google-translator.js';
+import type {
+  ChangesetItem,
+  ChangesetRemoveOperationItem,
+  ChangesetTranslateOperationItem,
+  TranslationData,
+} from './types.js';
 
 type Translator = GoogleTranslator;
 
@@ -16,13 +21,13 @@ class ChangeExecutor {
 
   async execute(change: ChangesetItem) {
     switch (change.op) {
-    case 'remove':
-      await this.executeRemoval(change);
-      break;
+      case 'remove':
+        await this.executeRemoval(change);
+        break;
 
-    case 'translate':
-      await this.executeTranslation(change);
-      break;
+      case 'translate':
+        await this.executeTranslation(change);
+        break;
     }
   }
 

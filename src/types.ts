@@ -1,4 +1,4 @@
-import Translation from './translation';
+import type Translation from './translation.js';
 
 export type FileFormat = 'json' | 'yaml';
 
@@ -10,10 +10,10 @@ export interface TranslatorConfig {
   fileFormat: FileFormat;
   sourceLanguage: string;
   destinationLanguages: TranslatorConfigDestinationLanguage[];
-  gcpKey: string;
-  gcpProjectId: string;
-  projectDir: string;
-  translationsDir: string;
+  gcpKey?: string;
+  gcpProjectId?: string;
+  projectDir?: string;
+  translationsDir?: string;
 }
 
 export interface ChangeTemplateRemoveOperation {

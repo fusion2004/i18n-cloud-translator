@@ -1,7 +1,7 @@
-import path = require('path');
-const convict = require('convict');
-import dotenv = require('dotenv');
-import { TranslatorConfig } from './types';
+import * as path from 'path';
+import convict from 'convict';
+import dotenv from 'dotenv';
+import type { TranslatorConfig } from './types.js';
 
 interface GetConfigFuncParams {
   projectDir: string;
@@ -29,7 +29,7 @@ export function getConfig({ projectDir, configFile }: GetConfigFuncParams): Tran
   let config = convict({
     fileFormat: {
       doc: 'The file format of your translation files (json, yaml)',
-      format: ['json', 'yaml'],
+      format: ['json', 'yaml'] as const,
       default: 'json',
     },
     sourceLanguage: {
@@ -52,26 +52,26 @@ export function getConfig({ projectDir, configFile }: GetConfigFuncParams): Tran
     gcpKey: {
       doc: 'Your Google Cloud Platform Key',
       format: String,
-      default: null,
+      default: undefined,
       env: 'GCP_KEY',
       sensitive: true,
     },
     gcpProjectId: {
       doc: 'Your Google Cloud Platform Project ID',
       format: String,
-      default: null,
+      default: undefined,
       env: 'GCP_PROJECT_ID',
       sensitive: true,
     },
     projectDir: {
       doc: 'The directory of the project',
       format: String,
-      default: null,
+      default: undefined,
     },
     translationsDir: {
       doc: 'The directory, relative to the project root, where your translations are',
       format: String,
-      default: null,
+      default: undefined,
     },
   });
 
