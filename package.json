@@ -6,6 +6,7 @@
   "bin": "./bin/run.js",
   "bugs": "https://github.com/https://github.com/fusion2004/i18n-cloud-translator/issues",
   "dependencies": {
+    "@formatjs/icu-messageformat-parser": "^2.9.4",
     "@google-cloud/translate": "^8.5.0",
     "@oclif/core": "^4.0.33",
     "@oclif/plugin-help": "^6.2.18",
