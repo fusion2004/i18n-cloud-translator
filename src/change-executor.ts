@@ -158,7 +158,7 @@ class ChangeExecutor {
     const $ = cheerio.load(reconstituted, null, false);
 
     $('span[translate="no"]').each((i, el) => {
-      const elementIndex = parseInt($.text([el]).trim().slice(1), 10);
+      const elementIndex = parseInt(($(el).attr('data-ref') || '').slice(1), 10);
       $(el).replaceWith(printAST([parsed.elements[elementIndex]]));
     });
 
@@ -190,7 +190,7 @@ class ChangeExecutor {
         if (isLiteralElement(element)) {
           text += element.value;
         } else if (isArgumentElement(element)) {
-          text += `<span translate="no">${parsed.nextElementReference}</span>`;
+          text += `<span translate="no" data-ref="${parsed.nextElementReference}">${parsed.nextElementReference}</span>`;
         } else if (isPluralElement(element)) {
           throw 'Plurals not yet supported nested in translation, must be root level & only element';
         } else {
