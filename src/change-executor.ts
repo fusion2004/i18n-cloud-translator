@@ -21,6 +21,12 @@ type Translator = GoogleTranslator;
 class ParsedTranslations {
   textStrings: string[] = [];
   elements: MessageFormatElement[] = [];
+  pluralCategories: string[];
+
+  constructor(lang: string) {
+    const rules = new Intl.PluralRules(lang);
+    this.pluralCategories = rules.resolvedOptions().pluralCategories;
+  }
 
   get nextElementReference() {
     return `$${this.elements.length}`;
@@ -123,7 +129,7 @@ class ChangeExecutor {
   parsedTranslation(text: string, lang: string): ParsedTranslations {
     const parsedElements = parse(text, { ignoreTag: true });
 
-    let parsed = new ParsedTranslations();
+    let parsed = new ParsedTranslations(lang);
 
     this.parseElements(parsedElements, parsed);
 
@@ -167,9 +173,13 @@ class ChangeExecutor {
       const plural = elements[0];
       parsed.elements.push(plural);
       for (const [name, option] of Object.entries(plural.options)) {
-        const textReference = parsed.nextTextStringReference;
-        this.parseElements(option.value, parsed);
-        option.value = [createLiteralElement(textReference)];
+        if (name[0] === '=' || parsed.pluralCategories.includes(name)) {
+          const textReference = parsed.nextTextStringReference;
+          this.parseElements(option.value, parsed);
+          option.value = [createLiteralElement(textReference)];
+        } else {
+          delete plural.options[name];
+        }
       }
     } else {
       let text = '';
