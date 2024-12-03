@@ -15,8 +15,8 @@ class GoogleTranslator {
     this.sourceLanguage = config.sourceLanguage;
   }
 
-  translate(text: string, lang: string) {
-    return this.client.translate(text, lang);
+  translate(texts: string[], lang: string) {
+    return this.client.translate(texts, lang);
   }
 }
 

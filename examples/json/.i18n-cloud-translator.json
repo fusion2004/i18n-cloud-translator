@@ -1,0 +1,9 @@
+{
+  "fileFormat": "json",
+  "sourceLanguage": "en",
+  "destinationLanguages": [
+    { "code": "de" },
+    { "code": "es" }
+  ],
+  "translationsDir": "translations"
+}

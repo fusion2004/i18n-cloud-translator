@@ -1,0 +1,8 @@
+{
+  "global": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "send_noun_to_the_moon": "Send {noun} to '{the}' moon",
+    "modules_count": "{count, plural,\n=0 {<strong class=\"text-primary\">No</strong> Modules}\none {<strong class=\"text-primary\">1</strong> Module}\nother {<strong class=\"text-primary\">{count}</strong> Modules}\n}"
+  }
+}

@@ -19,8 +19,8 @@ Automated translation of i18n files using cloud translation APIs
 $ npm install -g i18n-cloud-translator
 $ i18n-cloud-translator COMMAND
 running command...
-$ i18n-cloud-translator (-v|--version|version)
-i18n-cloud-translator/0.4.1 darwin-x64 node-v10.20.1
+$ i18n-cloud-translator (--version|-v)
+i18n-cloud-translator/0.5.0 linux-x64 node-v22.11.0
 $ i18n-cloud-translator --help [COMMAND]
 USAGE
   $ i18n-cloud-translator COMMAND
@@ -29,5 +29,23 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`i18n-cloud-translator`](#i18n-cloud-translator)
 
+## `i18n-cloud-translator`
+
+```
+USAGE
+  $ i18n-cloud-translator  [--json] [--verbose]
+
+FLAGS
+  --verbose  Show additional information about the CLI.
+
+GLOBAL FLAGS
+  --json  Format output as json.
+
+FLAG DESCRIPTIONS
+  --verbose  Show additional information about the CLI.
+
+    Additionally shows the architecture, node version, operating system, and versions of plugins that the CLI is using.
+```
 <!-- commandsstop -->

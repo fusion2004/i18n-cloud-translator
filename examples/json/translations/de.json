@@ -1,0 +1,8 @@
+{
+  "global": {
+    "save": "Speichern",
+    "cancel": "Stornieren",
+    "send_noun_to_the_moon": "Schicke {noun} zum Mond",
+    "modules_count": "{count,plural,=0{<strong class=\"text-primary\">Keine</strong> Module} one{<strong class=\"text-primary\">1</strong> Modul} other{Module <strong class=\"text-primary\">{count}</strong>}}"
+  }
+}

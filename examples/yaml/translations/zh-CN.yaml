@@ -1,0 +1,8 @@
+global:
+  save: 节省
+  cancel: 取消
+  send_noun_to_the_moon: 向月球发送{noun}
+  modules_count: >-
+    {count,plural,=0{<strong class="text-primary">无</strong>模块} other{<strong
+    class="text-primary">{count}</strong>模块}}
+
