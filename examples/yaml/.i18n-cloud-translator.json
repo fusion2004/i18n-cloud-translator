@@ -1,0 +1,9 @@
+{
+  "fileFormat": "yaml",
+  "sourceLanguage": "en",
+  "destinationLanguages": [
+    { "code": "es" },
+    { "code": "zh-CN" }
+  ],
+  "translationsDir": "translations"
+}
